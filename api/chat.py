@@ -1,40 +1,46 @@
-
+# Import necessary libraries
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import openai
 import os
-from http.server import BaseHTTPRequestHandler
-from json import dumps, loads
-import requests
 
-class handler(BaseHTTPRequestHandler):
+# Initialize the Flask application
+app = Flask(__name__)
 
-    def do_POST(self):
-        # Parse the incoming conversation messages from the client's request
-        content_length = int(self.headers['Content-Length'])
-        post_data = loads(self.rfile.read(content_length))
+# Configure CORS with the environment variable for allowed origins, supporting comma-separated URLs
+CORS(app, resources={r"/api/*": {"origins": os.getenv('ALLOWED_ORIGINS').split(',')}})
 
-        # Prepare the data for OpenAI API request
-        openai_request_payload = {
-            "model": "gpt-4",  # specify the model you're using
-            "messages": post_data['messages']  # conversation history from the client
-        }
+# Load the OpenAI API key from an environment variable
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
-        # Add your own OpenAI API Key here
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {os.getenv("OPENAI_API_KEY")}'
-        }
+# Get the system message from an environment variable
+SYSTEM_MESSAGE = os.getenv('SYSTEM_MESSAGE', 'You are a helpful assistant.')
 
-        # Make the POST request to OpenAI API
-        response = requests.post(
-            'https://api.openai.com/v1/chat/completions',
-            headers=headers,
-            json=openai_request_payload
+# Define the route for the chat API
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    # Parse the incoming JSON data
+    data = request.json
+    messages = data.get('messages', [])
+
+    # Add the system message at the start of the conversation
+    system_message = {
+        "role": "system",
+        "content": SYSTEM_MESSAGE
+    }
+    messages.insert(0, system_message)
+
+    # Call the OpenAI API with the conversation messages and return the response
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # Use GPT-4 model
+            messages=messages
         )
+        return jsonify(response)
+    except openai.error.OpenAIError as e:
+        # If there is an API error, return the error message with a 500 status code
+        return jsonify({'error': str(e)}), 500
 
-        # Send back the OpenAI API response to the client
-        self.send_response(200)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        self.wfile.write(dumps(response.json()).encode())
-
-# Note: Remember to handle exceptions and errors appropriately in production code.
+# Run the Flask app if this file is executed as the main program
+if __name__ == '__main__':
+    app.run()
