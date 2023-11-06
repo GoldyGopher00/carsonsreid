@@ -13,7 +13,7 @@ class handler(BaseHTTPRequestHandler):
 
         # Prepare the data for OpenAI API request
         openai_request_payload = {
-            "model": "gpt-3.5-turbo",  # specify the model you're using
+            "model": "gpt-4",  # specify the model you're using
             "messages": post_data['messages']  # conversation history from the client
         }
 
