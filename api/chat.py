@@ -34,7 +34,7 @@ def chat():
     # Call the OpenAI API with the conversation messages and return the response
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # Use GPT-4 model
+            model="gpt-3.5-turbo-16k",  # Use GPT-4 model
             messages=messages
         )
         return jsonify(response)
