@@ -58,7 +58,7 @@
 }
 
 .message-text {
-  white-space: pre-wrap; /* This will allow line breaks and white space */
+  white-space: normal; /* This will allow line breaks and white space */
 }
 
 .input {
@@ -235,7 +235,7 @@ button {
 }
 
 .message-text li {
-  margin-bottom: 0.1em; /* Reduces the bottom margin for list items */
+  margin-bottom: 1em; /* Reduces the bottom margin for list items */
 }
 
 .message-text ol,
