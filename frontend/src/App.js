@@ -77,8 +77,8 @@ function App() {
           // Construct the bot message object
           const botMessage = {
             content: parseMarkdown(response.data.choices[0].message.content),
-            role: 'assistant',
-            name: 'AgentCarson',
+            role: 'system',
+            name: 'Carson Reid',
             html: true // Indicates the message contains HTML and should be rendered as such
           };
           // Add the bot message to the conversation
