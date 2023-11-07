@@ -35,63 +35,81 @@ function App() {
     e.target.style.height = `${Math.min(e.target.scrollHeight, 300)}px`;
   };
 
-  // Function to send the user's message to the server and handle the response
-  const sendMessage = async () => {
-    if (input.trim() && !isLoading) {
-      // Constructing the user message object
-      const userMessage = {
-        role: 'user',
-        content: input,
-        name: 'You'
-      };
-      // Adding the user message to the conversation
-      setMessages(messages => [...messages, userMessage]);
-      setInput(''); // Clear the input field
-      setIsLoading(true); // Set loading state
-      startTypingEffect(); // Start the typing effect
+// Function to send the user's message to the server and handle the response
+const sendMessage = async () => {
+  if (input.trim() && !isLoading) {
+    // Constructing the user message object
+    const userMessage = {
+      role: 'user',
+      content: input,
+      name: 'You'
+    };
+    // Adding the user message to the conversation
+    setMessages(messages => [...messages, userMessage]);
+    setInput(''); // Clear the input field
+    setIsLoading(true); // Set loading state
+    startTypingEffect(); // Start the typing effect
 
-      // Prepare the messages for the API call
-      const apiMessages = messages
-        .filter(m => !m.isLoading)
-        .map(({ role, content }) => ({ role, content }));
+    // Prepare the messages for the API call
+    const apiMessages = messages
+      .filter(m => !m.isLoading)
+      .map(({ role, content }) => ({ role, content }));
 
-      // Add the new message to the message list for the API call
-      apiMessages.push({ role: 'user', content: input });
+    // Add the new message to the message list for the API call
+    apiMessages.push({ role: 'user', content: input });
 
-      try {
-        // Make the POST request to the server
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/chat`, {
-          messages: apiMessages,
-          sessionId: sessionId
-        });
+    try {
+      // Make the POST request to the server with a timeout of 60 seconds
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/chat`, {
+        messages: apiMessages,
+        sessionId: sessionId
+      }, { timeout: 60000 });
 
-        // If there's a typing effect ongoing, clear it
-        if (typingRef.current) {
-          clearInterval(typingRef.current);
-        }
-        // Remove the loading message from the conversation
-        setMessages(messages => messages.filter(m => !m.isLoading));
-
-        // Process the response from the server
-        if (response.data) {
-          // Construct the bot message object
-          const botMessage = {
-            content: parseMarkdown(response.data.choices[0].message.content),
-            role: 'system',
-            name: 'Carson Reid',
-            html: true // Indicates the message contains HTML and should be rendered as such
-          };
-          // Add the bot message to the conversation
-          setMessages(messages => [...messages, botMessage]);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert("There was an error with the interaction. Please try again later.");
-      } finally {
-        setIsLoading(false); // End the loading state
+      // If there's a typing effect ongoing, clear it
+      if (typingRef.current) {
+        clearInterval(typingRef.current);
       }
+      // Remove the loading message from the conversation
+      setMessages(messages => messages.filter(m => !m.isLoading));
+
+      // Process the response from the server
+      if (response.data) {
+        // Construct the bot message object
+        const botMessage = {
+          content: parseMarkdown(response.data.choices[0].message.content),
+          role: 'system',
+          name: 'Carson Reid',
+          html: true // Indicates the message contains HTML and should be rendered as such
+        };
+        // Add the bot message to the conversation
+        setMessages(messages => [...messages, botMessage]);
+      }
+    } catch (error) {
+      // Remove the loading message from the conversation
+      setMessages(messages => messages.filter(m => !m.isLoading));
+      
+      // Check if the error was a timeout
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        // Update the messages state with the timeout message
+        setMessages(messages => [
+          ...messages,
+          {
+            role: 'system',
+            name: 'AgentCarson',
+            content: 'Sorry, it looks like we have worked my nueral network a bit too hard, please try again. If the issue persists, do me a solid and refresh the page.',
+            html: false
+          }
+        ]);
+      } else {
+        // Handle other types of errors
+        console.error('Error:', error);
+        alert("Sorry, it looks like we have worked my nueral network a bit too hard, please try again. If the issue persists, do me a solid and refresh the page.");
+      }
+    } finally {
+      setIsLoading(false); // End the loading state
     }
-  };
+  }
+};
 
   // Function to simulate the typing effect of the bot
   const startTypingEffect = () => {
