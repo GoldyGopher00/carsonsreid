@@ -1,0 +1,246 @@
+.App {
+  display: flex;
+  font-family: "Signifer-Light", sans-serif; /* If this font isn't available, it will revert to sans-serif */
+  text-align: left;
+  height: 98vh; /* This limits the height of the app to the viewport height */
+  margin: 0; /* Ensure there is no margin */
+  overflow: hidden; /* Prevent scrolling on the x-axis */
+}
+
+.portfolio {
+  width: 20%;
+  background-color: #f7f7f7;
+  padding: 0px;
+  overflow-y: hidden;
+}
+
+.chat-interface {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  position: relative;
+}
+
+.messages {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow-y: auto;
+}
+
+.message {
+  margin: 2px 0;
+  padding: 5px 10px;
+  display: block;
+  max-width: 100%;
+  align-self: flex-start;
+}
+
+.message-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.message.user .message-name {
+  color: #777; /* Gray color for Interviewer */
+}
+
+.message.assistant .message-name {
+  color: #00796b; /* Teal color for AgentCarson */
+}
+
+.message-text {
+  white-space: pre-wrap; /* This will allow line breaks and white space */
+}
+
+.input {
+  padding: 20px;
+  margin: 10px 0 0; /* Adjust top margin to 0 */
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  width: calc(100%px); /* Adjust width based on padding */
+  max-width: 100%;
+  min-height: 20px;
+  max-height: 300px; /* Increased max height */
+  overflow-y: auto;
+  resize: none;
+  position: sticky;
+  bottom: 10px;
+  background: white;
+  box-sizing: border-box; /* Makes sure padding is included in width and height */
+}
+
+.line {
+  border-top: 1px solid #ddd;
+  position: sticky;
+  bottom: 70px; /* Adjust based on the height of your input box */
+  margin: 0 -20px; /* Adjust based on the padding of the parent */
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px 0;
+  background-color: #009688;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Styles for loading message container */
+.message.loading {
+  animation: flash 1.5s infinite;
+}
+
+/* Ensure AgentCarson's name remains green even while the message is loading */
+.message.loading .message-name {
+  color: #00796b; /* Teal color for AgentCarson */
+}
+
+/* Existing keyframes for flash */
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Disable save button */
+.button-disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.scroll-bottom-button {
+  background-color: #009688;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}
+
+@media (max-width: 999px) {
+  .portfolio {
+    display: none; /* Hide the portfolio div */
+  }
+
+  .chat-interface {
+    width: 100%; /* Make the chat interface take full width */
+  }
+}
+
+.portfolio {
+  width: 100%;
+  background-color: #f7f7f7;
+  padding: 0px;
+  overflow: hidden; /* Changed from auto to hidden to avoid double scrollbars */
+  height: 100%; /* Ensure the height takes up the entire container */
+  position: relative; /* If you need to position elements over the iframe */
+}
+
+/* Scrollbar styles for Webkit (Chrome, Safari, newer versions of Opera) */
+::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f7f7; /* color of the tracking area */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b8b8b8; /* color of the scroll thumb */
+  border-radius: 10px; /* roundness of the scroll thumb */
+  border: 2px solid #f7f7f7; /* creates padding around scroll thumb */
+}
+
+/* Scrollbar styles for Firefox */
+* {
+  scrollbar-width: thin; /* "auto" or "thin" */
+  scrollbar-color: #b8b8b8 #f7f7f7; /* thumb and track color */
+}
+
+/* Scrollbar styles for Internet Explorer, Edge */
+* {
+  -ms-overflow-style: -ms-autohiding-scrollbar; /* auto-hide scrollbar in Edge and IE */
+}
+
+/* Markdown formatting styles */
+.markdown-format {
+  line-height: 1.6; /* Improve line-height for readability */
+}
+
+.markdown-format h1,
+.markdown-format h2,
+.markdown-format h3,
+.markdown-format h4,
+.markdown-format h5,
+.markdown-format h6 {
+  margin-top: 1em; /* Add top margin to headers */
+}
+
+.markdown-format p {
+  margin-bottom: 1em; /* Add bottom margin to paragraphs */
+}
+
+.markdown-format ul,
+.markdown-format ol {
+  padding-left: 10px; /* Add padding to lists */
+  margin-bottom: 1em; /* Add bottom margin to lists */
+}
+
+.markdown-format li {
+  margin-bottom: 0.5em; /* Add bottom margin to list items */
+}
+
+.markdown-format code {
+  background-color: #f7f7f7; /* Light background for code */
+  border-radius: 4px; /* Rounded corners for code blocks */
+  padding: 2px 4px; /* Padding inside code blocks */
+}
+
+.markdown-format pre {
+  background-color: #f7f7f7; /* Light background for preformatted text */
+  border: 1px solid #ddd; /* Border around preformatted text */
+  padding: 10px; /* Padding inside preformatted text */
+  overflow: auto; /* Allow scrolling for long code */
+}
+
+.markdown-format strong {
+  font-weight: bold; /* Ensure strong is bold */
+}
+
+.markdown-format em {
+  font-style: italic; /* Ensure em is italic */
+}
+
+/* Adjust line-height to control spacing within paragraphs and list items */
+.message-text {
+  line-height: 1.25;
+  font-size: 0.9em;
+}
+
+.message-text p {
+  margin-top: 0.1em; /* Reduces the top margin */
+  margin-bottom: 0.1em; /* Reduces the bottom margin */
+}
+
+.message-text li {
+  margin-bottom: 0.1em; /* Reduces the bottom margin for list items */
+}
+
+.message-text ol,
+.message-text ul {
+  padding-left: 25px; /* Remove padding to prevent indentation */
+  margin-top: 0.1em; /* Reduces the top margin for lists */
+  margin-bottom: 0.1em; /* Reduces the bottom margin for lists */
+}
