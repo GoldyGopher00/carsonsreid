@@ -53,7 +53,7 @@
   color: #777; /* Gray color for Interviewer */
 }
 
-.message.assistant .message-name {
+.message.assistant .message-name .message.system {
   color: #00796b; /* Teal color for AgentCarson */
 }
 
