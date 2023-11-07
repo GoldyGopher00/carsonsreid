@@ -231,7 +231,11 @@ button {
 
 .message-text p {
   margin-top: 0.1em; /* Reduces the top margin */
-  margin-bottom: 0.1em; /* Reduces the bottom margin */
+  margin-bottom: 1em; /* Reduces the bottom margin */
+}
+
+.message-text p:last-child {
+  margin-bottom: 0; /* Removes bottom margin from the last paragraph */
 }
 
 .message-text li {
