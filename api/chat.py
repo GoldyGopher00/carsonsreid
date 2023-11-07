@@ -8,7 +8,8 @@ import os
 app = Flask(__name__)
 
 # Configure CORS with the environment variable for allowed origins, supporting comma-separated URLs
-CORS(app, resources={r"/api/*": {"origins": os.getenv('ALLOWED_ORIGINS').split(',')}})
+allowed_origins = os.getenv('ALLOWED_ORIGINS', '*').split(',')
+CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
 # Load the OpenAI API key from an environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
