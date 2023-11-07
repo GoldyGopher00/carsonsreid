@@ -2,7 +2,7 @@
   display: flex;
   font-family: "Signifer-Light", sans-serif; /* If this font isn't available, it will revert to sans-serif */
   text-align: left;
-  height: 98vh; /* This limits the height of the app to the viewport height */
+  height: 98dvh; /* This limits the height of the app to the viewport height */
   margin: 0; /* Ensure there is no margin */
   overflow: hidden; /* Prevent scrolling on the x-axis */
 }
