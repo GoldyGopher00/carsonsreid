@@ -55,7 +55,7 @@
 
 .message.assistant .message-name,
 .message.system .message-name {
-  color: #00796b; /* Teal color for AgentCarson */
+  color: #00796b; /* Teal color for CarsonGPT */
 }
 
 .message-text {
@@ -101,9 +101,9 @@ button {
   animation: flash 1.5s infinite;
 }
 
-/* Ensure AgentCarson's name remains green even while the message is loading */
+/* Ensure CarsonGPT's name remains green even while the message is loading */
 .message.loading .message-name {
-  color: #00796b; /* Teal color for AgentCarson */
+  color: #00796b; /* Teal color for CarsonGPT */
 }
 
 /* Existing keyframes for flash */
