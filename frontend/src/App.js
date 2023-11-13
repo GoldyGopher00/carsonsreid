@@ -19,7 +19,7 @@ function App() {
   const messagesContainerRef = useRef(null); // Ref to the container of messages for scrolling behavior
 
   // Text to show when simulating the typing effect
-  const loadingMessage = "AgentCarson is thinking...";
+  const loadingMessage = "CarsonGPT is thinking...";
 
   // Function to parse markdown text and sanitize it for safe HTML rendering
   const parseMarkdown = (text) => {
@@ -95,7 +95,7 @@ const sendMessage = async () => {
           ...messages,
           {
             role: 'system',
-            name: 'AgentCarson',
+            name: 'CarsonGPT',
             content: 'Sorry, it looks like we have worked my nueral network a bit too hard, please try again. If the issue persists, do me a solid and refresh the page.',
             html: false
           }
@@ -125,7 +125,7 @@ const sendMessage = async () => {
           {
             content: loadingMessage.substring(0, index + 1),
             role: 'bot',
-            name: 'AgentCarson',
+            name: 'CarsonGPT',
             isLoading: true // Flag this message as loading
           }
         ]);
@@ -245,7 +245,7 @@ const sendMessage = async () => {
               sendMessage();
             }
           }}
-          placeholder="Hi, I'm AgentCarson. Interview me and I'll respond just like the real Carson."
+          placeholder="Hi, I'm CarsonGPT. Interview me and I'll respond just like the real Carson."
         />
         {/* Button to send messages */}
         <button onClick={sendMessage} disabled={isLoading} className={isLoading ? 'button-disabled' : ''}>
