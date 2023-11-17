@@ -36,16 +36,23 @@ def chat():
     }
     messages.insert(0, system_message)
 
+    # Log the received messages including the system message
+    print('Received messages:', messages)
+
     try:
         with time_limit(60):
             response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=messages
             )
-        return jsonify(response)
+            # Log the OpenAI response
+            print('OpenAI response:', response)
+            return jsonify(response)
     except TimeoutError:
+        print('TimeoutError occurred')  # Log the timeout error
         return jsonify({'error': 'Sorry, it looks like OpenAI took too long. Please try again. If the issue persists, please refresh the page.'}), 504
     except openai.error.OpenAIError as e:
+        print('OpenAIError:', str(e))  # Log the OpenAI error
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
