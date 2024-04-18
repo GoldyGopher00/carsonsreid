@@ -27,3 +27,4 @@ Flask
 openai
 firebase-admin
 gunicorn  # If you're using Gunicorn as your WSGI HTTP server
+psycopg2-binary
