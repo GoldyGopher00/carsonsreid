@@ -1,19 +1,30 @@
+import os
+import json
 import signal
 from contextlib import contextmanager
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
-import os
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
 
+# Environment variables
 allowed_origins = os.getenv('ALLOWED_ORIGINS', '*').split(',')
-CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
-
 openai.api_key = os.getenv('OPENAI_API_KEY')
 SYSTEM_MESSAGE = os.getenv('SYSTEM_MESSAGE', 'You are a helpful assistant.')
 
-# Create a context manager to timeout function execution
+# Initialize Firebase
+firebase_cred = json.loads(os.environ['FIREBASE_CREDENTIALS'].replace('\\n', '\n'))
+cred = credentials.Certificate(firebase_cred)
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+# Enable CORS
+CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
+
+# Context manager for handling timeout
 @contextmanager
 def time_limit(seconds):
     def signal_handler(signum, frame):
@@ -25,6 +36,7 @@ def time_limit(seconds):
     finally:
         signal.alarm(0)
 
+# API route for handling chat
 @app.route('/api/chat', methods=['POST'])
 def chat():
     data = request.json
@@ -36,23 +48,25 @@ def chat():
     }
     messages.insert(0, system_message)
 
-    # Log the received messages including the system message
-    print('Received messages:', messages)
-
     try:
         with time_limit(60):
             response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=messages
             )
-            # Log the OpenAI response
-            print('OpenAI response:', response)
+
+            # Save conversation to Firestore
+            chat_ref = db.collection('conversations').document()
+            chat_ref.set({
+                'user_messages': messages,
+                'ai_response': response,
+                'timestamp': firestore.SERVER_TIMESTAMP
+            })
+
             return jsonify(response)
     except TimeoutError:
-        print('TimeoutError occurred')  # Log the timeout error
-        return jsonify({'error': 'Sorry, it looks like OpenAI took too long. Please try again. If the issue persists, please refresh the page.'}), 504
+        return jsonify({'error': 'Timeout, please try again.'}), 504
     except openai.error.OpenAIError as e:
-        print('OpenAIError:', str(e))  # Log the OpenAI error
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
